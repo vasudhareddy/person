@@ -1,4 +1,4 @@
-Go to the project path and run the following command
+Go to the project path and run the following commands
 
 docker build -t person .
 

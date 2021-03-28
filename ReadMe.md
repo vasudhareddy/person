@@ -1,6 +1,7 @@
-Go to the project path and run the following command
+Go to the project path and run the following two commands
 
 docker build -t person .
+
 docker run -it person:latest
 
 Project will be up and running on port 8080

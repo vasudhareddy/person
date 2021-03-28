@@ -17,15 +17,12 @@ public class PersonController {
     PersonService personService;
 
     @PostMapping("/save")
-    @LoggedInUserName
-    public Person createPerson(@RequestHeader(name = "loggedInUserName",required = true) String loggedInUserName,
-                               @RequestBody PersonRequest personRequest) {
+    public Person createPerson(@RequestBody PersonRequest personRequest) {
         return personService.savePerson(personRequest);
     }
 
     @PostMapping
-    public List<Person> createPersons(@RequestHeader(name = "loggedInUserName",required = true) String loggedInUserName,
-                                      @RequestBody List<PersonRequest> personRequestList) {
+    public List<Person> createPersons(@RequestBody List<PersonRequest> personRequestList) {
         return personService.savePersons(personRequestList);
     }
 
@@ -41,15 +38,19 @@ public class PersonController {
 
     @DeleteMapping("/{id}")
     public String deletePerson(@PathVariable(name = "id") Long id) {
-         personService.deletePerson(id);
+        personService.deletePerson(id);
         return "Deleted Successfully";
     }
 
     @PutMapping("/{id}")
-    public Person updatePerson(@RequestHeader(name = "loggedInUserName") String loggedInUserName,
-                               @PathVariable(name = "id") Long id,
+    public Person updatePerson(@PathVariable(name = "id") Long id,
                                @RequestBody PersonRequest personRequest) {
-        return personService.updatePerson(id,personRequest);
+        return personService.updatePerson(id, personRequest);
+    }
+
+    @PostMapping("/authenticate")
+    public String authenticate(@RequestBody UserRequest userRequest) {
+        return "ok";
     }
 
 }

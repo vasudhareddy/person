@@ -3,22 +3,17 @@ package com.embl.person.controllers;
 import com.embl.person.*;
 import com.embl.person.entity.*;
 import com.embl.person.model.*;
-import org.junit.Test;
-import org.junit.*;
 import org.junit.jupiter.api.*;
-import org.junit.runner.*;
 import org.springframework.boot.test.context.*;
 import org.springframework.boot.test.web.client.*;
 import org.springframework.boot.web.server.*;
 import org.springframework.context.annotation.*;
 import org.springframework.http.*;
-import org.springframework.test.context.*;
-import org.springframework.test.context.junit4.*;
 
 import java.util.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(classes = PersonApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@RunWith(SpringRunner.class)
 @Profile("test")
 public class PersonControllerIntegrationTest {
 
@@ -32,7 +27,7 @@ public class PersonControllerIntegrationTest {
     Long id = 100L;
     TestRestTemplate restTemplate = new TestRestTemplate();
 
-    @Before
+    @BeforeEach
     public void setUp() {
         request1 = PersonRequest.builder().firstName("firstName1").lastName("lastName1").age(10).favouriteColour("pink1").build();
         request2 = PersonRequest.builder().firstName("firstName2").lastName("lastName2").age(10).favouriteColour("pink2").build();
@@ -43,14 +38,14 @@ public class PersonControllerIntegrationTest {
     @Test
     public void test_createPerson() {
         HttpHeaders headers = new HttpHeaders();
-        headers.add("loggedInUserName", "userName1");
+      //  headers.add("loggedInUserName", "userName1");
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<PersonRequest> request = new HttpEntity<>(request1, headers);
         Person personResponse = this.restTemplate.postForObject("http://localhost:" + port + "/embl/persons/save", request, Person.class);
-        Assert.assertEquals("firstName1", personResponse.getFirstName());
-        Assertions.assertEquals("lastName1", personResponse.getLastName());
-        Assertions.assertEquals("pink1", personResponse.getFavouriteColour());
-        Assertions.assertEquals(10, personResponse.getAge());
+        assertEquals("firstName1", personResponse.getFirstName());
+        assertEquals("lastName1", personResponse.getLastName());
+        assertEquals("pink1", personResponse.getFavouriteColour());
+        assertEquals(10, personResponse.getAge());
     }
 
     @Test
@@ -60,20 +55,20 @@ public class PersonControllerIntegrationTest {
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<List<PersonRequest>> request = new HttpEntity<>(Arrays.asList(request1, request2), headers);
         Person[] personResponse = this.restTemplate.postForObject("http://localhost:" + port + "/embl/persons", request, Person[].class);
-        Assert.assertEquals("firstName1", personResponse[0].getFirstName());
-        Assert.assertEquals("lastName1", personResponse[0].getLastName());
-        Assert.assertEquals("pink1", personResponse[0].getFavouriteColour());
-        Assert.assertEquals(10, personResponse[0].getAge().intValue());
-        Assert.assertEquals("firstName2", personResponse[1].getFirstName());
-        Assert.assertEquals("lastName2", personResponse[1].getLastName());
-        Assert.assertEquals("pink2", personResponse[1].getFavouriteColour());
-        Assert.assertEquals(10, personResponse[1].getAge().intValue());
+        assertEquals("firstName1", personResponse[0].getFirstName());
+        assertEquals("lastName1", personResponse[0].getLastName());
+        assertEquals("pink1", personResponse[0].getFavouriteColour());
+        assertEquals(10, personResponse[0].getAge().intValue());
+        assertEquals("firstName2", personResponse[1].getFirstName());
+        assertEquals("lastName2", personResponse[1].getLastName());
+        assertEquals("pink2", personResponse[1].getFavouriteColour());
+        assertEquals(10, personResponse[1].getAge().intValue());
     }
 
     @Test
     public void test_getAllPersons() {
         Person[] persons = this.restTemplate.getForObject("http://localhost:" + port + "/embl/persons", Person[].class);
-        Assert.assertNotNull(persons);
+        assertNotNull(persons);
     }
 
     @Test
@@ -81,7 +76,7 @@ public class PersonControllerIntegrationTest {
         Map<String, String> params = new HashMap<>();
         params.put("id", String.valueOf(id));
         Person person = this.restTemplate.getForObject("http://localhost:" + port + "/embl/persons/{id}", Person.class,params);
-        Assert.assertNotNull(person);
+        assertNotNull(person);
     }
 
     @Test

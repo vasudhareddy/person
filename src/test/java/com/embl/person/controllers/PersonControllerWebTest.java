@@ -5,26 +5,22 @@ import com.embl.person.model.*;
 import com.embl.person.service.*;
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.*;
-import org.junit.Test;
-import org.junit.*;
 import org.junit.jupiter.api.*;
-import org.junit.runner.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.boot.test.autoconfigure.web.servlet.*;
 import org.springframework.boot.test.mock.mockito.*;
 import org.springframework.http.*;
-import org.springframework.test.context.junit4.*;
 import org.springframework.test.web.servlet.*;
 
 import java.util.*;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @AutoConfigureMockMvc
 @WebMvcTest(PersonController.class)
-@RunWith(SpringRunner.class)
 public class PersonControllerWebTest {
 
     @MockBean
@@ -41,7 +37,7 @@ public class PersonControllerWebTest {
     Person person1;
     Person person2;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         request1 = PersonRequest.builder().firstName("firstName1").lastName("lastName1").age(10).favouriteColour("pink1").build();
         request2 = PersonRequest.builder().firstName("firstName2").lastName("lastName2").age(10).favouriteColour("pink2").build();
@@ -50,20 +46,21 @@ public class PersonControllerWebTest {
     }
 
     @Test
+    @DisplayName("This test test if a person is created or not")
     public void test_createPerson() {
         String requestJson = "";
         when(personService.savePerson(request1)).thenReturn(person1);
         try {
             requestJson = mapper.writeValueAsString(request1);
-            MvcResult result = this.mockMvc.perform(post("/persons/save").header("loggedInUserName", "userName1")
+            MvcResult result = this.mockMvc.perform(post("/persons/save")
                     .accept(MediaType.APPLICATION_JSON)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(requestJson)).andReturn();
             Person personResponse = mapper.readValue(result.getResponse().getContentAsString(), Person.class);
-            Assertions.assertEquals("firstName1", personResponse.getFirstName());
-            Assertions.assertEquals("lastName1", personResponse.getLastName());
-            Assertions.assertEquals("pink1", personResponse.getFavouriteColour());
-            Assertions.assertEquals(10, personResponse.getAge());
+            assertEquals("firstName1", personResponse.getFirstName());
+            assertEquals("lastName1", personResponse.getLastName());
+            assertEquals("pink1", personResponse.getFavouriteColour());
+            assertEquals(10, personResponse.getAge());
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         } catch (Exception e) {
@@ -82,7 +79,7 @@ public class PersonControllerWebTest {
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(requestJson)).andReturn();
             List<Person> personListResponse = Arrays.asList(mapper.readValue(result.getResponse().getContentAsString(), Person[].class));
-            Assertions.assertEquals(2, personListResponse.size());
+            assertEquals(2, personListResponse.size());
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         } catch (Exception e) {
@@ -97,11 +94,11 @@ public class PersonControllerWebTest {
         MvcResult result = this.mockMvc.perform(get("/persons")).andReturn();
         String output = result.getResponse().getContentAsString();
         List<Person> personList = Arrays.asList(mapper.readValue(output, Person[].class));
-        Assertions.assertEquals(2, personList.size());
-        Assertions.assertEquals("firstName1", personList.get(0).getFirstName());
-        Assertions.assertEquals("lastName1", personList.get(0).getLastName());
-        Assertions.assertEquals(10, personList.get(1).getAge());
-        Assertions.assertEquals("pink2", personList.get(1).getFavouriteColour());
+        assertEquals(2, personList.size());
+        assertEquals("firstName1", personList.get(0).getFirstName());
+        assertEquals("lastName1", personList.get(0).getLastName());
+        assertEquals(10, personList.get(1).getAge());
+        assertEquals("pink2", personList.get(1).getFavouriteColour());
     }
 
     @Test
@@ -110,10 +107,10 @@ public class PersonControllerWebTest {
         MvcResult result = this.mockMvc.perform(get("/persons/{id}", 100L)).andReturn();
         String output = result.getResponse().getContentAsString();
         Person person = mapper.readValue(output, Person.class);
-        Assertions.assertEquals("firstName1", person.getFirstName());
-        Assertions.assertEquals("lastName1", person.getLastName());
-        Assertions.assertEquals(10, person.getAge());
-        Assertions.assertEquals("pink1", person.getFavouriteColour());
+        assertEquals("firstName1", person.getFirstName());
+        assertEquals("lastName1", person.getLastName());
+        assertEquals(10, person.getAge());
+        assertEquals("pink1", person.getFavouriteColour());
     }
 
     @Test
@@ -125,7 +122,7 @@ public class PersonControllerWebTest {
                     .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk()).andReturn();
             String output = result.getResponse().getContentAsString();
-            Assert.assertEquals("Deleted Successfully",output);
+            assertEquals("Deleted Successfully",output);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -145,7 +142,7 @@ public class PersonControllerWebTest {
                     .andReturn();
 
             Person responsePerson = mapper.readValue(result.getResponse().getContentAsString(),Person.class);
-            Assert.assertEquals("firstName1",responsePerson.getFirstName());
+            assertEquals("firstName1",responsePerson.getFirstName());
 
         } catch (JsonProcessingException e) {
             e.printStackTrace();

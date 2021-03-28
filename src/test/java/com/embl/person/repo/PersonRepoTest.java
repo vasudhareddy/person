@@ -1,18 +1,17 @@
 package com.embl.person.repo;
 
 import com.embl.person.entity.*;
-import org.junit.*;
-import org.junit.runner.*;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.boot.test.autoconfigure.orm.jpa.*;
-import org.springframework.test.context.junit4.*;
 
 import java.time.*;
 import java.util.*;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@RunWith(SpringRunner.class)
+
 @DataJpaTest
 public class PersonRepoTest {
 
@@ -22,7 +21,7 @@ public class PersonRepoTest {
     Person person1;
     Person person2;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         person1 = Person.builder().firstName("firstName1").lastName("lastName1").favouriteColour("pink1").age(10).build();
         person1.setCreatedBy("testUser1");
@@ -51,7 +50,7 @@ public class PersonRepoTest {
         Optional<Person> person = personRepo.findById(savedPerson.getPersonId());
         person.get().setAge(25);
         Person updatedPerson = personRepo.saveAndFlush(person.get());
-        Assert.assertEquals(25, updatedPerson.getAge().intValue());
+        assertEquals(25, updatedPerson.getAge().intValue());
     }
 
     @Test
@@ -60,14 +59,14 @@ public class PersonRepoTest {
         Optional<Person> person = personRepo.findById(savedPerson.getPersonId());
         personRepo.deleteById(person.get().getPersonId());
         Optional<Person> deletedPerson = personRepo.findById(savedPerson.getPersonId());
-        Assert.assertEquals(Optional.empty(), deletedPerson);
+        assertEquals(Optional.empty(), deletedPerson);
     }
 
     @Test
     public void testFind() {
         Person savedPerson = personRepo.saveAndFlush(person1);
         Optional<Person> person = personRepo.findById(savedPerson.getPersonId());
-        Assert.assertNotNull(person.get());
+        assertNotNull(person.get());
     }
 
     @Test
@@ -75,8 +74,8 @@ public class PersonRepoTest {
         personRepo.saveAndFlush(person1);
         personRepo.saveAndFlush(person2);
         List<Person> personList = personRepo.findAll();
-        Assert.assertNotNull(personList);
-        Assert.assertEquals(2,personList.size());
+        assertNotNull(personList);
+        assertEquals(2,personList.size());
     }
 
 }

@@ -5,5 +5,6 @@ import org.springframework.data.jpa.repository.*;
 
 import java.util.*;
 
-public interface PersonRepo extends JpaRepository<Person, Long> {
+public interface UserRepository extends JpaRepository<UserEntity,Long> {
+    Optional<UserEntity> findByName(String userName);
 }

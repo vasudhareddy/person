@@ -3,6 +3,7 @@ package com.embl.person;
 import org.springframework.boot.*;
 import org.springframework.boot.autoconfigure.*;
 import org.springframework.context.annotation.*;
+import org.springframework.security.crypto.bcrypt.*;
 import org.springframework.web.client.*;
 
 @SpringBootApplication
@@ -15,5 +16,10 @@ public class PersonApplication {
 	@Bean
 	public RestTemplate restTemplate() {
 		return  new RestTemplate();
+	}
+
+	@Bean
+	public BCryptPasswordEncoder bCryptPasswordEncoder() {
+		return  new BCryptPasswordEncoder();
 	}
 }
